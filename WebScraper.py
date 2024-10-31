@@ -5,16 +5,32 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def accessLink(url) -> str:
+def accessLink(url: str) -> str:
     response = requests.get(url, timeout=10)
     if response.status_code == 200:
         return response.text
     elif response.status_code == 404:
         raise requests.exceptions.RequestException("404 Not Found")
     
+def parseResponse(response: str) -> str:
+    soup = BeautifulSoup(response, 'html.parser')
+    images = soup.find_all('img')
+    links = soup.find_all('a')
+    linkArray = []
+    imageArray = []
+    for link in links:
+        linkArray.append(link.get("href"))
+        
+    for image in images:
+        imageArray.append(image.get("href"))
+        
+    return linkArray, imageArray
 
 if __name__ == "__main__":
     response = None
+    links = []
+    images = []
+    
     try:
         response = accessLink("https://www.bbc.co.uk/news")
     except requests.Timeout:
@@ -24,7 +40,8 @@ if __name__ == "__main__":
         print("Error: ", err)
         exit()
     
-    print(response)
+    links, images = parseResponse(response)
+
         
     
         
