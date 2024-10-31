@@ -22,7 +22,7 @@ def parseResponse(response: str) -> str:
         linkArray.append(link.get("href"))
         
     for image in images:
-        imageArray.append(image.get("href"))
+        imageArray.append(image)
         
     return linkArray, imageArray
 
